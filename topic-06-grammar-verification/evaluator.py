@@ -32,6 +32,9 @@ def evaluate(ast, environment={}):
         while evaluate(ast["condition"], environment):
             evaluate(ast["do"], environment)
         return None
+    if ast["tag"] == "_kentid_":
+        environment["_kentid_"] = ast["value"] + "@kent.edu"
+        return None
     if ast["tag"] == "assign":
         target = ast["target"]
         assert target["tag"] == "identifier"
@@ -223,6 +226,12 @@ def test_while_statement():
     assert eval("while(x<6){y=y+1;x=x+1}",env) == None
     assert env["x"] == 6
     assert env["y"] == 7
+    
+def test_kent_id_statement():
+    print("testing kent id statement")
+    env = {}
+    assert eval("kcalkin1",env) == None
+    assert env["_kentid_"] == "kcalkin1@kent.edu"
 
 if __name__ == "__main__":
     test_evaluate_number()
@@ -235,4 +244,5 @@ if __name__ == "__main__":
     test_evaluate_identifier()
     test_if_statement()
     test_while_statement()
+    test_kent_id_statement()
     print("done.")

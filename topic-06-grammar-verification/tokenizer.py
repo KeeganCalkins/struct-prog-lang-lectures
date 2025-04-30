@@ -10,6 +10,7 @@ patterns = [
     [r"break","break"],
     [r"return","return"],
     [r"assert","assert"],
+    [r"kcalkin1","_kentid_"],
     [r"and","&&"],
     [r"or","||"],
     [r"not","!"],

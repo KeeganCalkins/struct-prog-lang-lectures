@@ -20,10 +20,11 @@ grammar = """
     expression = logical_expression
     statement_block = "{" statement { ";" statement } "}"
     assignment_statement = expression [ "=" expression ]
+    student_id = "kcalkin1"
     print_statement = "print" [ expression ]
     if_statement = "if" "(" expression ")" statement_block [ "else" statement_block ]
     while_statement = "while" "(" expression ")" statement_block
-    statement = statement_block | if_statement | while_statement | print_statement | assignment_statement
+    statement = statement_block | if_statement | while_statement | print_statement | assignment_statement | student_id_statement
     program = [ statement { ";" statement } ]
 """
 
@@ -505,9 +506,33 @@ def test_parse_assignment_statement():
     ast, tokens = parse_assignment_statement(tokenize("2"))
     assert ast == {"tag": "number", "value": 2}
 
+def parse_student_id_statement(tokens):
+    """
+    student_id = "kcalkin1"
+    """
+    assert tokens[0]["tag"] == "_kentid_", f"Expected '_kentid_', got {tokens[0]}"
+    kentid = tokens[0]["value"]
+    ast = {
+        "tag": "_kentid_",
+        "value": "kcalkin1"
+    }
+    return ast, tokens[1:]
+
+def test_parse_student_id_statement():
+    """
+    student_id = "kcalkin1"
+    """
+    print("testing test_parse_student_id_statement()")
+    ast, tokens = parse_student_id_statement(tokenize("kcalkin1"))
+    assert ast == {
+        "tag": "_kentid_",
+        "value": "kcalkin1"
+    }
+    assert tokens[0]["tag"] is None
+
 def parse_statement(tokens):
     """
-    statement = statement_block | if_statement | while_statement | print_statement | assignment_statement
+    statement = statement_block | if_statement | while_statement | print_statement | assignment_statement | student_id_statement
     """
     tag = tokens[0]["tag"]
     if tag == "{":
@@ -518,11 +543,13 @@ def parse_statement(tokens):
         return parse_while_statement(tokens)
     if tag == "print":
         return parse_print_statement(tokens)
+    if tag == "_kentid_":
+        return parse_student_id_statement(tokens)
     return parse_assignment_statement(tokens)
 
 def test_parse_statement():
     """
-    statement = statement_block | if_statement | while_statement | print_statement | assignment_statement
+    statement = statement_block | if_statement | while_statement | print_statement | assignment_statement | student_id_statement
     """
     print("testing parse_statement...")
     ast, _ = parse_statement(tokenize("{print 1}"))
@@ -531,6 +558,8 @@ def test_parse_statement():
     assert ast == {"tag": "print", "value": {"tag": "number", "value": 1}}
     ast, _ = parse_statement(tokenize("x=3"))
     assert ast == {"tag": "assign", "target": {"tag": "identifier", "value": "x"}, "value": {"tag": "number", "value": 3}}
+    ast, _ = parse_statement(tokenize("kcalkin1"))
+    assert ast == {'tag': '_kentid_', 'value': 'kcalkin1'}
 
 def parse_program(tokens):
     """
@@ -586,6 +615,7 @@ if __name__ == "__main__":
         test_parse_if_statement,
         test_parse_while_statement,
         test_parse_assignment_statement,
+        test_parse_student_id_statement,
         test_parse_statement,
         test_parse_program,
     ]
