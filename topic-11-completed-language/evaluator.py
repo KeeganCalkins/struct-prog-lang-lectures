@@ -333,7 +333,6 @@ def evaluate(ast, environment):
         for case in ast["cases"]:
             case_value, _ = evaluate(case["value"], environment)
             if value_to_match == case_value:
-                val, status = evaluate(case["body"], environment)
                 _, _ = evaluate(case["body"], environment)
                 return None, None
         if ast.get("default") is not None:
