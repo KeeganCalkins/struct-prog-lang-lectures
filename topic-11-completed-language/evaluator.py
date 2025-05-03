@@ -333,10 +333,10 @@ def evaluate(ast, environment):
         for case in ast["cases"]:
             case_value, _ = evaluate(case["value"], environment)
             if value_to_match == case_value:
-                _, _ = evaluate(case["body"], environment)
+                evaluate(case["body"], environment)
                 return None, None
         if ast.get("default") is not None:
-            _, _ = evaluate(ast["default"], environment)
+            evaluate(ast["default"], environment)
         return None, None
 
     if ast["tag"] == "statement_list":
