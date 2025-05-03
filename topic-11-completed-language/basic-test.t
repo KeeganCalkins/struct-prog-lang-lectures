@@ -128,4 +128,30 @@ assert add(2,3) == 5;
 sub = function(x,y) { return x - y}
 assert sub(5,3) == 2;
 
+print "Testing switch statements...";
+
+x = 1;
+switch(x) {
+  case 1: { y = 10; break; }
+  case 2: { y = 20; break; }
+  default: { y = 30; }
+}
+assert y == 10;
+
+x = 2;
+switch(x) {
+  case 1: { y = 10; break; }
+  case 2: { y = 20; break; }
+  default: { y = 30; }
+}
+assert y == 20;
+
+x = 3;
+switch(x) {
+  case 1: { y = 10; break; }
+  case 2: { y = 20; break; }
+  default: { y = 30; }
+}
+assert y == 30;
+
 print "Done."

@@ -12,6 +12,9 @@ patterns = [
     [r"if", "if"],  # if keyword
     [r"else", "else"],  # else keyword
     [r"while", "while"],  # while keyword
+    [r"switch", "switch"],  # switch keyword
+    [r"case", "case"],  # case keyword
+    [r"default", "default"],  # default keyword
     [r"for", "for"],  # for keyword
     [r"break", "break"],  # for keyword
     [r"continue", "continue"],  # for keyword
@@ -224,6 +227,9 @@ def test_keywords():
         "if",
         "else",
         "while",
+        "switch",
+        "case",
+        "default",
         "for",
         "break",
         "continue",

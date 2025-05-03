@@ -113,6 +113,19 @@ def ast_to_string(ast):
         else:
             return "return" 
 
+    if ast["tag"] == "break":
+        return "break"
+
+    if ast["tag"] == "switch":
+        s  = "switch(" + ast_to_string(ast["expression"]) + ") {"
+        for case in ast["cases"]:
+            s += "case " + ast_to_string(case["value"]) + ": "
+            s += ast_to_string(case["body"])  # prints {…}
+        if ast.get("default") is not None:
+            s += "default: " + ast_to_string(ast["default"])
+        s += "}"
+        return s
+
     assert False, f"Unknown tag [{ast['tag']}] in AST"
 
 __builtin_functions = [
@@ -315,6 +328,18 @@ def evaluate(ast, environment):
                 return condition_value, exit_status
         return None, False
 
+    if ast["tag"] == "switch":
+        value_to_match, _ = evaluate(ast["expression"], environment)
+        for case in ast["cases"]:
+            case_value, _ = evaluate(case["value"], environment)
+            if value_to_match == case_value:
+                val, status = evaluate(case["body"], environment)
+                _, _ = evaluate(case["body"], environment)
+                return None, None
+        if ast.get("default") is not None:
+            _, _ = evaluate(ast["default"], environment)
+        return None, None
+
     if ast["tag"] == "statement_list":
         for statement in ast["statements"]:
             value, exit_status = evaluate(statement, environment)
@@ -405,6 +430,9 @@ def evaluate(ast, environment):
             value, exit_status = evaluate(ast["value"], environment)
             return value, "return"
         return None, "return"
+    
+    if ast["tag"] == "break":
+        return None, "break"
 
     assert False, f"Unknown tag [{ast['tag']}] in AST"
 
@@ -503,6 +531,18 @@ def test_evaluate_while_statement():
     print("testing evaluate_while_statement")
     equals("while(0) {x=1}", {}, None, {})
     equals("x=1; while(x<5) {x=x+1}; y=3", {}, 3, {"x": 5, "y": 3})
+
+def test_evaluate_switch_statement():
+    print("testing evaluate_switch_statement")
+    test_code = "switch(x) { case 1:{y=10;break;} case 2:{y=20;break;} default:{y=30;} }"
+    env = {"x": 1}
+    equals(test_code, env, None, {"x": 1, "y": 10})
+
+    env = {"x": 2}
+    equals(test_code, env, None, {"x": 2, "y": 20})
+
+    env = {"x": 3}
+    equals(test_code, env, None, {"x": 3, "y": 30})
 
 
 def test_evaluate_assignment_statement():
@@ -750,6 +790,7 @@ if __name__ == "__main__":
     test_evaluate_print_statement()
     test_evaluate_if_statement()
     test_evaluate_while_statement()
+    test_evaluate_switch_statement()
     test_evaluate_assignment_statement()
     test_evaluate_function_literal()
     test_evaluate_function_call()
