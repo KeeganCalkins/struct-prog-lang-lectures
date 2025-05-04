@@ -533,15 +533,15 @@ def test_evaluate_while_statement():
 
 def test_evaluate_switch_statement():
     print("testing evaluate_switch_statement")
-    test_code = "switch(x) { case 1:{y=10;break;} case 2:{y=20;break;} default:{y=30;} }"
+    code = "switch(x) { case 1:{y=10;break;} case 2:{y=20;break;} default:{y=30;} }"
     env = {"x": 1}
-    equals(test_code, env, None, {"x": 1, "y": 10})
+    equals(code, env, None, {"x": 1, "y": 10})
 
     env = {"x": 2}
-    equals(test_code, env, None, {"x": 2, "y": 20})
+    equals(code, env, None, {"x": 2, "y": 20})
 
     env = {"x": 3}
-    equals(test_code, env, None, {"x": 3, "y": 30})
+    equals(code, env, None, {"x": 3, "y": 30})
 
 
 def test_evaluate_assignment_statement():
